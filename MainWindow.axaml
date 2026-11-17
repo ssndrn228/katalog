@@ -11,20 +11,53 @@
         Width="800"
         Height="450">
 
-    <StackPanel Margin="20" Spacing="12">
-        <TextBlock Text="Mój katalog"
-                   FontSize="28"
-                   FontWeight="Bold"/>
+    <Grid>
+        <StackPanel Name="ListScreen"
+                    Margin="20"
+                    Spacing="12">
+            <TextBlock Text="Mój katalog"
+                       FontSize="28"
+                       FontWeight="Bold"/>
 
-        <TextBlock Text="Moje pozycje:"
-                   FontSize="18"/>
+            <TextBlock Text="Moje pozycje:"
+                       FontSize="18"/>
 
-        <ListBox Name="ItemsList"
-                 Height="280"/>
+            <ListBox Name="ItemsList"
+                     Height="280"
+                     SelectionChanged="OnItemSelected"/>
 
-        <Button Content="Odśwież listę"
-                HorizontalAlignment="Left"
-                Click="OnRefreshClick"/>
-    </StackPanel>
+            <Button Content="Odśwież listę"
+                    HorizontalAlignment="Left"
+                    Click="OnRefreshClick"/>
+        </StackPanel>
+
+        <StackPanel Name="DetailsScreen"
+                    Margin="20"
+                    Spacing="12"
+                    IsVisible="False">
+            <Button Content="Powrót do listy"
+                    HorizontalAlignment="Left"
+                    Click="OnBackClick"/>
+
+            <TextBlock Text="Szczegóły pozycji"
+                       FontSize="28"
+                       FontWeight="Bold"/>
+
+            <TextBlock Text="Tytuł"
+                       FontWeight="Bold"/>
+            <TextBlock Name="TitleText"
+                       FontSize="20"/>
+
+            <TextBlock Text="Rok"
+                       FontWeight="Bold"/>
+            <TextBlock Name="YearText"
+                       FontSize="20"/>
+
+            <TextBlock Text="Ocena"
+                       FontWeight="Bold"/>
+            <TextBlock Name="RatingText"
+                       FontSize="20"/>
+        </StackPanel>
+    </Grid>
 
 </Window>
