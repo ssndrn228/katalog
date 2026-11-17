@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using System;
 using System.IO;
+using Avalonia.Interactivity;
 
 namespace katalog;
 
@@ -22,12 +23,15 @@ public partial class MainWindow : Window
         foreach (string line in lines)
         {
             string[] parts = line.Split(';');
+
             if (parts.Length != 3)
             {
-                throw new InvalidDataException($"Nieprawidłowy format pozycji: {line}");
+                throw new InvalidDataException(
+                    $"Nieprawidłowy format pozycji: {line}");
             }
 
-            ItemsList.Items.Add(new CatalogItem(parts[0], parts[1], parts[2]));
+            ItemsList.Items.Add(
+                new CatalogItem(parts[0], parts[1], parts[2]));
         }
     }
 
@@ -38,29 +42,31 @@ public partial class MainWindow : Window
             TitleText.Text = item.Title;
             YearText.Text = item.Year;
             RatingText.Text = item.Rating;
+
             ListScreen.IsVisible = false;
             DetailsScreen.IsVisible = true;
         }
     }
 
-    private void OnBackClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnBackClick(object? sender, RoutedEventArgs e)
     {
         DetailsScreen.IsVisible = false;
         ListScreen.IsVisible = true;
         ItemsList.SelectedItem = null;
     }
 
-    private void OnAddClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnAddClick(object? sender, RoutedEventArgs e)
     {
         TitleInput.Text = string.Empty;
         YearInput.Text = string.Empty;
         RatingInput.Text = string.Empty;
+
         FormError.IsVisible = false;
         ListScreen.IsVisible = false;
         FormScreen.IsVisible = true;
     }
 
-    private void OnSaveClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnSaveClick(object? sender, RoutedEventArgs e)
     {
         string title = TitleInput.Text?.Trim() ?? string.Empty;
         string yearText = YearInput.Text?.Trim() ?? string.Empty;
@@ -92,18 +98,24 @@ public partial class MainWindow : Window
 
         string filePath = "dane/pozycje.txt";
         string existingData = File.ReadAllText(filePath);
+
         bool needsLineBreak = existingData.Length > 0
             && existingData[existingData.Length - 1] != '\n'
             && existingData[existingData.Length - 1] != '\r';
+
         string lineBreak = needsLineBreak ? Environment.NewLine : string.Empty;
-        File.AppendAllText(filePath, $"{lineBreak}{title};{year};{rating}{Environment.NewLine}");
+
+        File.AppendAllText(
+            filePath,
+            $"{lineBreak}{title};{year};{rating}{Environment.NewLine}");
 
         LoadItems();
+
         FormScreen.IsVisible = false;
         ListScreen.IsVisible = true;
     }
 
-    private void OnCancelClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnCancelClick(object? sender, RoutedEventArgs e)
     {
         FormScreen.IsVisible = false;
         ListScreen.IsVisible = true;
@@ -115,9 +127,15 @@ public partial class MainWindow : Window
         FormError.IsVisible = true;
     }
 
-    private void OnRefreshClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void OnRefreshClick(object? sender, RoutedEventArgs e)
     {
         LoadItems();
+    }
+
+    private void OnCountClick(object? sender, RoutedEventArgs e)
+    {
+        var lines = File.ReadAllLines("dane/pozycje.txt");
+        CountText.Text = $"Pozycji w pliku: {lines.Length}";
     }
 
     private class CatalogItem

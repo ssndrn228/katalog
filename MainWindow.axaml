@@ -30,6 +30,10 @@
                     HorizontalAlignment="Left"
                     Click="OnRefreshClick"/>
 
+            <Button Content="Policz" Click="OnCountClick" />
+
+            <TextBlock Name="CountText" Text="Liczba pozycji: -" />
+
             <Button Content="Dodaj pozycję"
                     HorizontalAlignment="Left"
                     Click="OnAddClick"/>
