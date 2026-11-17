@@ -1,5 +1,6 @@
 
 using Avalonia.Controls;
+using System;
 using System.IO;
 
 namespace katalog;
@@ -47,6 +48,71 @@ public partial class MainWindow : Window
         DetailsScreen.IsVisible = false;
         ListScreen.IsVisible = true;
         ItemsList.SelectedItem = null;
+    }
+
+    private void OnAddClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        TitleInput.Text = string.Empty;
+        YearInput.Text = string.Empty;
+        RatingInput.Text = string.Empty;
+        FormError.IsVisible = false;
+        ListScreen.IsVisible = false;
+        FormScreen.IsVisible = true;
+    }
+
+    private void OnSaveClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        string title = TitleInput.Text?.Trim() ?? string.Empty;
+        string yearText = YearInput.Text?.Trim() ?? string.Empty;
+        string ratingText = RatingInput.Text?.Trim() ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            ShowFormError("Wpisz tytuł.");
+            return;
+        }
+
+        if (title.Contains(';') || title.Contains('\n') || title.Contains('\r'))
+        {
+            ShowFormError("Tytuł nie może zawierać średnika ani znaku nowej linii.");
+            return;
+        }
+
+        if (!int.TryParse(yearText, out int year) || year <= 0)
+        {
+            ShowFormError("Rok musi być dodatnią liczbą całkowitą.");
+            return;
+        }
+
+        if (!int.TryParse(ratingText, out int rating) || rating < 1 || rating > 10)
+        {
+            ShowFormError("Ocena musi być liczbą całkowitą od 1 do 10.");
+            return;
+        }
+
+        string filePath = "dane/pozycje.txt";
+        string existingData = File.ReadAllText(filePath);
+        bool needsLineBreak = existingData.Length > 0
+            && existingData[existingData.Length - 1] != '\n'
+            && existingData[existingData.Length - 1] != '\r';
+        string lineBreak = needsLineBreak ? Environment.NewLine : string.Empty;
+        File.AppendAllText(filePath, $"{lineBreak}{title};{year};{rating}{Environment.NewLine}");
+
+        LoadItems();
+        FormScreen.IsVisible = false;
+        ListScreen.IsVisible = true;
+    }
+
+    private void OnCancelClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        FormScreen.IsVisible = false;
+        ListScreen.IsVisible = true;
+    }
+
+    private void ShowFormError(string message)
+    {
+        FormError.Text = message;
+        FormError.IsVisible = true;
     }
 
     private void OnRefreshClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
